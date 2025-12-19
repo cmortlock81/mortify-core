@@ -1,17 +1,19 @@
 <?php
 /**
- * Mortify 2026 Admin Settings
+ * Mortify Core Admin Settings
  *
  * Provides a top-level admin menu with PWA and UI configuration.
  *
- * @package Mortify2026
+ * @package Mortify\Core
  */
 
+namespace Mortify\Core;
+
 if ( ! defined( 'ABSPATH' ) ) {
-	exit;
+        exit;
 }
 
-class Mortify2026_Admin {
+class Admin {
 
 	/**
 	 * Hook into admin actions.
@@ -180,10 +182,10 @@ class Mortify2026_Admin {
 	/**
 	 * Render the settings page content.
 	 */
-	public function render_settings_page(): void {
-		?>
-		<div class="wrap">
-			<h1><?php esc_html_e( 'Mortify 2026 Settings', 'mortify2026' ); ?></h1>
+        public function render_settings_page(): void {
+                ?>
+                <div class="wrap">
+                        <h1><?php esc_html_e( 'Mortify 2026 Settings', 'mortify2026' ); ?></h1>
 			<form method="post" action="options.php">
 				<?php
 				settings_fields( 'mortify2026_settings_group' );
@@ -193,5 +195,7 @@ class Mortify2026_Admin {
 			</form>
 		</div>
 		<?php
-	}
+        }
 }
+
+class_alias( Admin::class, 'Mortify2026_Admin' );
