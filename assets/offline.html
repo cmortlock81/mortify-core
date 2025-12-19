@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+	<title>Offline • Mortify 2026</title>
+	<style>
+		body {
+			font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+			text-align: center;
+			height: 100vh;
+			margin: 0;
+			background: #f9fafb;
+			color: #1f2937;
+		}
+		h1 {
+			font-size: 1.75rem;
+			margin-bottom: 0.5rem;
+		}
+		p {
+			color: #6b7280;
+			margin-bottom: 1.5rem;
+		}
+		button {
+			background-color: #2563eb;
+			color: white;
+			border: none;
+			padding: 0.75rem 1.5rem;
+			border-radius: 0.5rem;
+			font-size: 1rem;
+			cursor: pointer;
+			box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+			transition: background 0.2s ease-in-out;
+		}
+		button:hover {
+			background-color: #1e40af;
+		}
+	</style>
+</head>
+<body>
+	<h1>You're Offline</h1>
+	<p>It looks like you’ve lost your internet connection.<br>Check your network and try again.</p>
+	<button id="retry">🔄 Retry</button>
+
+	<script>
+		const retryBtn = document.getElementById('retry');
+
+		retryBtn.addEventListener('click', () => {
+			location.reload();
+		});
+
+		// Auto-retry when back online
+		window.addEventListener('online', () => {
+			location.reload();
+		});
+	</script>
+</body>
+</html>

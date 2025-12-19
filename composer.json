@@ -1,0 +1,23 @@
+{
+  "name": "pulsr/mortify2026",
+  "description": "App-style mobile shell plugin for WordPress with PWA and WooCommerce awareness.",
+  "type": "wordpress-plugin",
+  "license": "GPL-2.0-or-later",
+  "require": {
+    "php": ">=8.1"
+  },
+  "require-dev": {
+    "dealerdirect/phpcodesniffer-composer-installer": "^1.0",
+    "wp-coding-standards/wpcs": "^3.0",
+    "phpunit/phpunit": "^10.0"
+  },
+  "config": {
+    "allow-plugins": {
+      "dealerdirect/phpcodesniffer-composer-installer": true
+    }
+  },
+  "scripts": {
+    "lint": "phpcs --standard=WordPress --ignore=vendor",
+    "test": "phpunit --testdox"
+  }
+}
