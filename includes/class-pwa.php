@@ -1,9 +1,12 @@
 <?php
+
+namespace Mortify\Core;
+
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-class Mortify2026_PWA {
+class PWA {
 
     public function __construct() {
         add_action( 'init', [ $this, 'register_routes' ] );
@@ -82,4 +85,6 @@ self.addEventListener('fetch', function () {});
     }
 }
 
-new Mortify2026_PWA();
+class_alias( PWA::class, 'Mortify2026_PWA' );
+
+new PWA();
