@@ -1,18 +1,20 @@
 <?php
 /**
- * Mortify 2026 WooCommerce Integration
+ * Mortify Core WooCommerce Integration
  *
  * Adds WooCommerce awareness: shop, cart, and account tabs,
  * and provides a live cart count endpoint for the top nav bar.
  *
- * @package Mortify2026
+ * @package Mortify\Core
  */
 
+namespace Mortify\Core;
+
 if ( ! defined( 'ABSPATH' ) ) {
-	exit;
+        exit;
 }
 
-class Mortify2026_WooCommerce {
+class WooCommerce {
 
 	/**
 	 * Hook into WooCommerce lifecycle.
@@ -79,6 +81,8 @@ class Mortify2026_WooCommerce {
 			wp_send_json_success( [ 'count' => 0 ] );
 		}
 
-		wp_send_json_success( [ 'count' => (int) $cart->get_cart_contents_count() ] );
-	}
+                wp_send_json_success( [ 'count' => (int) $cart->get_cart_contents_count() ] );
+        }
 }
+
+class_alias( WooCommerce::class, 'Mortify2026_WooCommerce' );

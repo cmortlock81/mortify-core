@@ -1,37 +1,42 @@
 <?php
 /**
- * Plugin Name: Mortify 2026
- * Description: App-style mobile shell for WordPress with PWA, WooCommerce integration, and modern Tailwind-inspired UI.
+ * Plugin Name: Mortify Core
+ * Plugin URI: https://mortify.co.uk
+ * Description: App shell and routing engine for WordPress.
  * Version: 1.5.6
- * Author: Chris Mortlock
- * Requires at least: 6.4
  * Requires PHP: 8.1
+ * Requires at least: 6.4
+ * Author: Chris Mortlock
  * Text Domain: mortify2026
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-    exit; // Exit if accessed directly
+namespace {
+    if ( ! defined( 'ABSPATH' ) ) {
+        exit; // Exit if accessed directly
+    }
+
+    /**
+     * Define core plugin constants
+     */
+    define( 'MORTIFY2026_PATH', plugin_dir_path( __FILE__ ) );
+    define( 'MORTIFY2026_URL', plugin_dir_url( __FILE__ ) );
+    define( 'MORTIFY2026_VERSION', '1.5.6' );
+    /**
+     * Load core includes
+     */
+    require_once MORTIFY2026_PATH . 'includes/helpers.php';
+    require_once MORTIFY2026_PATH . 'includes/class-router.php';
+    require_once MORTIFY2026_PATH . 'includes/class-pwa.php';
+    require_once MORTIFY2026_PATH . 'includes/class-admin.php';
+    require_once MORTIFY2026_PATH . 'includes/class-woocommerce.php';
 }
 
-/**
- * Define core plugin constants
- */
-define( 'MORTIFY2026_PATH', plugin_dir_path( __FILE__ ) );
-define( 'MORTIFY2026_URL', plugin_dir_url( __FILE__ ) );
-define( 'MORTIFY2026_VERSION', '1.5.6' );
-/**
- * Load core includes
- */
-require_once MORTIFY2026_PATH . 'includes/helpers.php';
-require_once MORTIFY2026_PATH . 'includes/class-router.php';
-require_once MORTIFY2026_PATH . 'includes/class-pwa.php';
-require_once MORTIFY2026_PATH . 'includes/class-admin.php';
-require_once MORTIFY2026_PATH . 'includes/class-woocommerce.php';
+namespace Mortify\Core {
 
 /**
  * Main plugin class.
  */
-class Mortify2026 {
+class Plugin {
 
     /**
      * Initialize hooks and classes.
@@ -46,13 +51,13 @@ class Mortify2026 {
      * @return void
      */
     public function boot(): void {
-        new Mortify2026_Router();
-        new Mortify2026_PWA();
-        new Mortify2026_Admin();
+        new Router();
+        new PWA();
+        new Admin();
 
         // Load WooCommerce support if WC is active
         if ( class_exists( 'WooCommerce' ) ) {
-            new Mortify2026_WooCommerce();
+            new WooCommerce();
         }
     }
 
@@ -62,8 +67,8 @@ class Mortify2026 {
      * @return void
      */
     public static function activate(): void {
-        Mortify2026_Router::activate();
-        Mortify2026_PWA::activate();
+        Router::activate();
+        PWA::activate();
     }
 
     /**
@@ -76,16 +81,26 @@ class Mortify2026 {
     }
 }
 
-/**
- * Register activation/deactivation hooks
- */
-register_activation_hook( __FILE__, [ 'Mortify2026', 'activate' ] );
-register_deactivation_hook( __FILE__, [ 'Mortify2026', 'deactivate' ] );
+class_alias( Plugin::class, 'Mortify2026' );
+}
 
-/**
- * Initialize plugin
- */
-new Mortify2026();
+namespace {
+    use Mortify\Core\Admin;
+    use Mortify\Core\Plugin;
+    use Mortify\Core\PWA;
+    use Mortify\Core\Router;
+    use Mortify\Core\WooCommerce;
+
+    /**
+     * Register activation/deactivation hooks
+     */
+    register_activation_hook( __FILE__, [ Plugin::class, 'activate' ] );
+    register_deactivation_hook( __FILE__, [ Plugin::class, 'deactivate' ] );
+
+    /**
+     * Initialize plugin
+     */
+    new Plugin();
 
 // Force WooCommerce URLs to stay inside Mortify app routes.
 add_filter( 'woocommerce_get_cart_url', function( $url ) {
@@ -297,3 +312,4 @@ function mortify2026_ajax_update_cart() {
 }
 add_action('wp_ajax_mortify_update_cart', 'mortify2026_ajax_update_cart');
 add_action('wp_ajax_nopriv_mortify_update_cart', 'mortify2026_ajax_update_cart');
+}

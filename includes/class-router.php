@@ -1,18 +1,20 @@
 <?php
 /**
- * Mortify 2026 Router
+ * Mortify Core Router
  *
  * Handles routing, template loading, and asset enqueueing
  * for the Mortify App shell under /app/.
  *
- * @package Mortify2026
+ * @package Mortify\Core
  */
 
+namespace Mortify\Core;
+
 if ( ! defined( 'ABSPATH' ) ) {
-	exit;
+        exit;
 }
 
-class Mortify2026_Router {
+class Router {
 
 	/**
 	 * Constructor — hook into WP lifecycle.
@@ -51,26 +53,29 @@ class Mortify2026_Router {
 		// Force Mortify shell for any request in app scope (e.g. /app and /app/*).
 		// This avoids relying on rewrite query vars which can be bypassed by real WP pages.
 		if ( mortify_in_app_scope() || get_query_var( 'mortify_app' ) ) {
-			return MORTIFY2026_PATH . 'templates/mortify-app.php';
-		}
-		return $template;
-	}
+                        return MORTIFY2026_PATH . 'templates/mortify-app.php';
+                }
+                return $template;
+        }
 
 	/**
 	 * Enqueue CSS and JS assets only on /app/.
 	 *
 	 * @return void
 	 */
-	public function enqueue_assets(): void {
-		if ( ! mortify_in_app_scope() ) {
-			return;
-		}
+        public function enqueue_assets(): void {
+                if ( ! mortify_in_app_scope() ) {
+                        return;
+                }
 
-		wp_enqueue_style(
-			'mortify2026-app',
-			MORTIFY2026_URL . 'assets/css/app.css',
-			[],
-			MORTIFY2026_VERSION
+                $settings = mortify_get_settings();
+                $slug     = trim( $settings['app_slug'], '/' );
+
+                wp_enqueue_style(
+                        'mortify2026-app',
+                        MORTIFY2026_URL . 'assets/css/app.css',
+                        [],
+                        MORTIFY2026_VERSION
 		);
 
 		wp_enqueue_script(
@@ -119,3 +124,5 @@ class Mortify2026_Router {
 		// Rewrite flushing is handled by the main plugin activator.
 	}
 }
+
+class_alias( Router::class, 'Mortify2026_Router' );
