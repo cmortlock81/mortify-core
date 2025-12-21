@@ -46,15 +46,17 @@ $brand    = $settings['brand'];
 document.addEventListener("DOMContentLoaded", function() {
 	const backBtn = document.getElementById("mortify-back");
 	const titleEl = document.getElementById("mortify-page-title");
-	const cartCount = document.getElementById("mortify-cart-count");
-	const cartBtn = document.getElementById("mortify-cart");
+        const cartCount = document.getElementById("mortify-cart-count");
+        const cartBtn = document.getElementById("mortify-cart");
+        const appSlug = mortifyApp.app_slug || 'app';
+        const appRoot = '/' + appSlug.replace(/^\/+|\/+$/g, '');
 
 	// 1️⃣ Back button visibility
-	const path = window.location.pathname.replace(/\/$/, "");
-	if (!path.endsWith("/app")) {
-		backBtn.classList.remove("hidden");
-		backBtn.addEventListener("click", () => window.history.back());
-	}
+        const path = window.location.pathname.replace(/\/$/, "");
+        if (!path.endsWith(appRoot)) {
+                backBtn.classList.remove("hidden");
+                backBtn.addEventListener("click", () => window.history.back());
+        }
 
 	// 2️⃣ Dynamic title updates (if JS changes document.title)
 	const observer = new MutationObserver(() => {
@@ -63,25 +65,38 @@ document.addEventListener("DOMContentLoaded", function() {
 	observer.observe(document.querySelector("title"), { childList: true });
 
 	// 3️⃣ Fetch cart count every 15s
-	async function updateCartCount() {
-		try {
-			const response = await fetch(mortifyApp.ajax_url + "?action=mortify_get_cart_count");
-			const data = await response.json();
-			if (data.success && data.data.count !== undefined) {
-				cartCount.textContent = data.data.count;
-				cartCount.style.display = data.data.count > 0 ? "inline-block" : "none";
-			}
-		} catch (err) {
-			console.warn("Cart count update failed", err);
-		}
-	}
+        async function updateCartCount() {
+                if (!mortifyApp.cart_count_endpoint) return;
+                try {
+                        const response = await fetch(mortifyApp.cart_count_endpoint);
+                        const data = await response.json();
+                        if (data.success && data.data.count !== undefined) {
+                                cartCount.textContent = data.data.count;
+                                cartCount.style.display = data.data.count > 0 ? "inline-block" : "none";
+                        }
+                } catch (err) {
+                        console.warn("Cart count update failed", err);
+                }
+        }
 
-	updateCartCount();
-	setInterval(updateCartCount, 15000);
+        if (mortifyApp.cart_count_endpoint) {
+                updateCartCount();
+                setInterval(updateCartCount, 15000);
+        } else {
+                cartCount.style.display = "none";
+        }
 
-	// 4️⃣ Click → go to cart
-	cartBtn.addEventListener("click", () => {
-		if (mortifyApp.cart_url) { window.location.href = mortifyApp.cart_url; } else { window.location.href = mortifyApp.app_base; }
-	});
+        // 4️⃣ Click → go to cart
+        cartBtn.addEventListener("click", () => {
+                if (!mortifyApp.cart_url) {
+                        return;
+                }
+
+                window.location.href = mortifyApp.cart_url;
+        });
+
+        if ( ! mortifyApp.cart_url ) {
+                cartBtn.style.display = "none";
+        }
 });
 </script>
