@@ -44,6 +44,39 @@ function mortify_get_settings(): array {
 }
 
 /**
+ * Get the configured app slug without leading/trailing slashes.
+ */
+function mortify_get_app_slug(): string {
+    $settings = mortify_get_settings();
+    $slug     = trim( (string) $settings['app_slug'], '/' );
+
+    return $slug ?: 'app';
+}
+
+/**
+ * Get the absolute base URL to the Mortify app shell.
+ */
+function mortify_get_app_base(): string {
+    $slug = mortify_get_app_slug();
+
+    return home_url( '/' . $slug . '/' );
+}
+
+/**
+ * Retrieve the template map for Mortify routes.
+ *
+ * Add-ons can inject additional views or override defaults using the
+ * `mortify_template_map` filter.
+ */
+function mortify_get_template_map(): array {
+    $map = [
+        'home' => MORTIFY2026_PATH . 'templates/home.php',
+    ];
+
+    return apply_filters( 'mortify_template_map', $map );
+}
+
+/**
  * Determine if the current page is within the /app/ scope.
  *
  * @return bool
