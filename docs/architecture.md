@@ -30,19 +30,17 @@ mortify-core/
 ├── includes/
 │   ├── class-router.php   ← Handles /app routing
 │   ├── class-admin.php    ← Admin menu & settings
-│   ├── class-woocommerce.php ← Woo bridge (to be extracted later)
 │   ├── class-pwa.php      ← PWA hooks (legacy, optional)
 │   └── helpers.php        ← Shared utility functions
 ├── templates/
 │   ├── mortify-app.php    ← App shell layout
-│   ├── store-grid.php     ← Woo shop
-│   ├── product.php
-│   ├── cart.php
-│   └── checkout.php
+│   └── home.php           ← Default WP loop content
 ├── assets/
 │   ├── css/app.css
-│   ├── js/app.js
-│   └── js/mortify-nav.js
+│   └── js/app.js
+
+WooCommerce-specific templates and routes now live in the sibling
+`mortify-woocommerce/` add-on.
 
 Routing Strategy
 

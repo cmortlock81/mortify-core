@@ -11,7 +11,10 @@
 	const main = document.getElementById("mortify-main");
 	const titleEl = document.getElementById("mortify-page-title");
 	const backBtn = document.getElementById("mortify-back");
-	const cartCount = document.getElementById("mortify-cart-count");
+        const cartCount = document.getElementById("mortify-cart-count");
+        const cartBtn = document.getElementById("mortify-cart");
+        const appSlug = mortifyApp.app_slug || "app";
+        const appRoot = "/" + appSlug.replace(/^\/+|\/+$/g, "");
 
 	// --- Service Worker Registration (backup to inline script)
 	if ("serviceWorker" in navigator) {
@@ -70,9 +73,9 @@
 			}
 
 			// Hide back button on /app/ home
-			const path = new URL(url).pathname.replace(/\/$/, "");
-			if (path === "/" + mortifyApp.app_slug || path === "/" + mortifyApp.app_slug + "/") backBtn.classList.add("hidden");
-			else backBtn.classList.remove("hidden");
+                        const path = new URL(url).pathname.replace(/\/$/, "");
+                        if (path === appRoot || path === appRoot + "/") backBtn.classList.add("hidden");
+                        else backBtn.classList.remove("hidden");
 
 			// Re-highlight footer tabs
 			highlightActiveTab(url);
@@ -98,22 +101,31 @@
 		});
 	}
 
-	/**
-	 * Periodic Cart Count Update
-	 */
-	async function updateCartCount() {
-		if (!cartCount) return;
-		try {
-			const res = await fetch(mortifyApp.ajax_url + "?action=mortify_get_cart_count");
-			const data = await res.json();
-			if (data.success && data.data.count !== undefined) {
-				cartCount.textContent = data.data.count;
-				cartCount.style.display = data.data.count > 0 ? "inline-block" : "none";
-			}
-		} catch (e) {
-			console.warn("Cart count fetch failed:", e);
-		}
-	}
-	updateCartCount();
-	setInterval(updateCartCount, 15000);
+        /**
+         * Periodic Cart Count Update
+         */
+        async function updateCartCount() {
+                if (!cartCount || !mortifyApp.cart_count_endpoint) return;
+                try {
+                        const res = await fetch(mortifyApp.cart_count_endpoint);
+                        const data = await res.json();
+                        if (data.success && data.data.count !== undefined) {
+                                cartCount.textContent = data.data.count;
+                                cartCount.style.display = data.data.count > 0 ? "inline-block" : "none";
+                        }
+                } catch (e) {
+                        console.warn("Cart count fetch failed:", e);
+                }
+        }
+
+        if (cartCount && mortifyApp.cart_count_endpoint) {
+                updateCartCount();
+                setInterval(updateCartCount, 15000);
+        } else if (cartCount) {
+                cartCount.style.display = "none";
+        }
+
+        if (cartBtn && !mortifyApp.cart_url) {
+                cartBtn.style.display = "none";
+        }
 })();

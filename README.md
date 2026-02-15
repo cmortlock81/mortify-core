@@ -3,7 +3,7 @@
 Mortify Core is the foundational WordPress plugin that provides an
 app-style shell for websites, rendered under a dedicated `/app` route.
 
-It is designed to wrap WordPress content and WooCommerce functionality
+It is designed to wrap WordPress content (with optional commerce add-ons)
 inside a consistent, mobile-first UI without modifying themes,
 overriding templates globally, or interfering with the main site.
 
@@ -26,7 +26,7 @@ extracted from a known working MVP build.
 
 - Registers and handles the `/app` route
 - Provides an application shell (top bar, navigation, container)
-- Renders WordPress and WooCommerce content inside the shell
+- Renders WordPress content inside the shell
 - Manages internal routing and templates
 - Exposes hooks for extensions (WooCommerce, PWA, etc.)
 - Provides a minimal admin settings interface
@@ -50,6 +50,12 @@ Those features belong in **separate add-on plugins**.
 - WordPress 6.2+
 - PHP 8.1+
 - WooCommerce (optional, for commerce features)
+
+### WooCommerce add-on
+
+The core plugin no longer ships WooCommerce templates. Activate the companion
+`mortify-woocommerce` plugin (lives as a sibling directory to this repository)
+alongside WooCommerce to expose `/app/shop`, `/app/cart`, and related routes.
 
 ---
 
