@@ -92,6 +92,15 @@ class Admin {
 			'mortify2026-settings',
 			'mortify_general_section'
 		);
+
+
+		add_settings_field(
+			'portfolio_urls',
+			__( 'Portfolio URLs', 'mortify2026' ),
+			[ $this, 'field_portfolio_urls' ],
+			'mortify2026-settings',
+			'mortify_general_section'
+		);
 	}
 
 	/**
@@ -120,6 +129,13 @@ class Admin {
 					'url'   => esc_url_raw( $tab['url'] ?? '' ),
 				];
 			}, $input['tabs'] );
+		}
+		if ( isset( $input['portfolio_urls'] ) && is_array( $input['portfolio_urls'] ) ) {
+			$portfolio_urls            = array_slice( $input['portfolio_urls'], 0, 6 );
+			$output['portfolio_urls'] = array_map( static function( $url ) {
+				return esc_url_raw( (string) $url );
+			}, $portfolio_urls );
+			$output['portfolio_urls'] = array_pad( $output['portfolio_urls'], 6, '' );
 		}
 
 		return $output;
@@ -176,6 +192,32 @@ class Admin {
 			</tbody>
 		</table>
 		<p class="description"><?php esc_html_e( 'Add or edit the bottom navigation tabs displayed in the app interface.', 'mortify2026' ); ?></p>
+		<?php
+	}
+
+
+	/**
+	 * Field: Portfolio URLs.
+	 */
+	public function field_portfolio_urls(): void {
+		$settings       = mortify_get_settings();
+		$portfolio_urls = array_values( $settings['portfolio_urls'] ?? [] );
+		$portfolio_urls = array_pad( $portfolio_urls, 6, '' );
+		?>
+		<div style="display:grid;gap:8px;max-width:720px;">
+			<?php for ( $i = 0; $i < 6; $i++ ) : ?>
+				<label>
+					<span style="display:block;margin-bottom:4px;"><?php echo esc_html( sprintf( __( 'Portfolio URL %d', 'mortify2026' ), $i + 1 ) ); ?></span>
+					<input
+						type="url"
+						name="mortify2026_settings[portfolio_urls][<?php echo esc_attr( (string) $i ); ?>]"
+						value="<?php echo esc_url( $portfolio_urls[ $i ] ); ?>"
+						class="regular-text"
+					>
+				</label>
+			<?php endfor; ?>
+		</div>
+		<p class="description"><?php esc_html_e( 'Supports up to 6 portfolio sources. Leave any extra fields empty if unused.', 'mortify2026' ); ?></p>
 		<?php
 	}
 
