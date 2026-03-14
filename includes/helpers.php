@@ -28,6 +28,14 @@ function mortify_get_settings(): array {
         'tabs' => [
             ['label' => 'Home', 'icon' => '🏠', 'url' => home_url('/')],
         ],
+        'portfolio_urls' => [
+            '',
+            '',
+            '',
+            '',
+            '',
+            '',
+        ],
         'pwa' => [
             'name'              => 'Mortify 2026',
             'short_name'        => 'Mortify',
